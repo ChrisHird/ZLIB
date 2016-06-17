@@ -1,0 +1,68 @@
+000100040201.**********************************************************************
+000200040201.* DSPZIP command help panel
+000300040201.*****************************************************************
+000400040201.*
+000500040201:PNLGRP.
+000600040201:HELP NAME='DSPZIP'.
+000700040201Display Zipped File (DSPZIP) - Help
+000800040201:P.
+000900040201The DSPZIP command allows you to view contents of
+001000040201standard ZIP format file. The format is compatible with
+001100040201PKZip 2.04g, WinZip, InfoZip and other popular ZIP utilities.
+001200040201:P.
+001300040201Sample output
+001400040201:P.
+001500040201:LINES.
+001600040201  Length  Method   Size  Ratio   Date    Time   CRC-32     Name
+001700040201  ------  ------   ----  -----   ----    ----   ------     ----
+001800040201   37272  Defl:N*   6983  18%  09-27-03  13:00  296d360d   /tmp/zip.c
+001900040201:ELINES.
+002000040201:P.
+002100040201:LINES.
+002200040201    Length    : uncompressed size.
+002300040201    Method    : 'Defl:N' -> normal, 'Defl:X' -> best, 'Defl:F' -> fast
+002400040201                '*' indicates the file is encrypted.
+002500040201    Size      : compressed size.
+002600040201    Ratio     : compression ratio.
+002700040201    Date/Time : file timestamp (MM-DD-YY HH:MM).
+002800040201    CRC-32    : 32-bit cyclic redundancy checksum.
+002900040201    Name      : file path name.
+003000040201:ELINES.
+003100040201:P.
+003200040201:HP2.Restrictions::EHP2.
+003300040201:UL.
+003400040201:LI.
+003500040201Multi volume ZipFile (span) is not supported.
+003600040201:LI.
+003700040201Old compression used by old PKZip 1.x is not supported.
+003800040201:LI.
+003900040201Wild card (*, ?) and regular expression are not supported.
+004000040201:EUL.
+004100040201.* Error messages
+004200040201:XH3.Error messages for ZIP
+004300040201:P.
+004400040201:HP3.*ESCAPE Messages:EHP3.
+004500040201:DL COMPACT.
+004600040201:DT.CPF9897
+004700040201:DD.Command failed.
+004800040201:EDL.
+004900040201:EHELP.
+005000040201.*****************************************************************
+005100040201.* Parameters Help
+005200040201.*
+005300040201:HELP NAME='DSPZIP/ZIPFILE'.
+005400040201ZIP file (ZIPFILE) - HELP
+005500040201:XH3.ZIP file (ZIPFILE)
+005600040201:P.
+005700040201Specifies ZIP file name.
+005800040201:IMHELP NAME='COM/REQPARM'.
+005900040201:EHELP.
+006000040201.*****************************************************************
+006100040201.* Common help entries
+006200040201:HELP NAME='COM/REQPARM'.
+006300040201:P.
+006400040201This is a required parameter.
+006500040201:EHELP.
+006600040201.*
+006700040201.********************************************************************
+006800040201:EPNLGRP.

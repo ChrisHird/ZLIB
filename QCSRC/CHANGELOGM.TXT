@@ -1,0 +1,67 @@
+000100000000Change in 1.01e (12 feb 05)
+000200000000- Fix in zipOpen2 for globalcomment (Rolf Kalbermatter)
+000300000000- Fix possible memory leak in unzip.c (Zoran Stevanovic)
+000400000000
+000500000000Change in 1.01b (20 may 04)
+000600000000- Integrate patch from Debian package (submited by Mark Brown)
+000700000000- Add tools mztools from Xavier Roche
+000800000000
+000900000000Change in 1.01 (8 may 04)
+001000000000- fix buffer overrun risk in unzip.c (Xavier Roche)
+001100000000- fix a minor buffer insecurity in minizip.c (Mike Whittaker)
+001200000000
+001300000000Change in 1.00: (10 sept 03)
+001400000000- rename to 1.00
+001500000000- cosmetic code change
+001600000000
+001700000000Change in 0.22: (19 May 03)
+001800000000- crypting support (unless you define NOCRYPT)
+001900000000- append file in existing zipfile
+002000000000
+002100000000Change in 0.21: (10 Mar 03)
+002200000000- bug fixes
+002300000000
+002400000000Change in 0.17: (27 Jan 02)
+002500000000- bug fixes
+002600000000
+002700000000Change in 0.16: (19 Jan 02)
+002800000000- Support of ioapi for virtualize zip file access
+002900000000
+003000000000Change in 0.15: (19 Mar 98)
+003100000000- fix memory leak in minizip.c
+003200000000
+003300000000Change in 0.14: (10 Mar 98)
+003400000000- fix bugs in minizip.c sample for zipping big file
+003500000000- fix problem in month in date handling
+003600000000- fix bug in unzlocal_GetCurrentFileInfoInternal in unzip.c for
+003700000000    comment handling
+003800000000
+003900000000Change in 0.13: (6 Mar 98)
+004000000000- fix bugs in zip.c
+004100000000- add real minizip sample
+004200000000
+004300000000Change in 0.12: (4 Mar 98)
+004400000000- add zip.c and zip.h for creates .zip file
+004500000000- fix change_file_date in miniunz.c for Unix (Jean-loup Gailly)
+004600000000- fix miniunz.c for file without specific record for directory
+004700000000
+004800000000Change in 0.11: (3 Mar 98)
+004900000000- fix bug in unzGetCurrentFileInfo for get extra field and comment
+005000000000- enhance miniunz sample, remove the bad unztst.c sample
+005100000000
+005200000000Change in 0.10: (2 Mar 98)
+005300000000- fix bug in unzReadCurrentFile
+005400000000- rename unzip* to unz* function and structure
+005500000000- remove Windows-like hungary notation variable name
+005600000000- modify some structure in unzip.h
+005700000000- add somes comment in source
+005800000000- remove unzipGetcCurrentFile function
+005900000000- replace ZUNZEXPORT by ZEXPORT
+006000000000- add unzGetLocalExtrafield for get the local extrafield info
+006100000000- add a new sample, miniunz.c
+006200000000
+006300000000Change in 0.4: (25 Feb 98)
+006400000000- suppress the type unzipFileInZip.
+006500000000  Only on file in the zipfile can be open at the same time
+006600000000- fix somes typo in code
+006700000000- added tm_unz structure in unzip_file_info (date/time in readable format)

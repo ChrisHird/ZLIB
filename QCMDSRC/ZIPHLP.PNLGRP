@@ -1,0 +1,134 @@
+000100040201.**********************************************************************
+000200040201.* ZIP command help panel
+000300040201.*****************************************************************
+000400040201.*
+000500040201:PNLGRP.
+000600040201:HELP NAME='ZIP'.
+000700040201Zip (compress) file (ZIP) - Help
+000800040201:P.
+000900040201The ZIP command allows you to compress file(s) to
+001000040201standard ZIP format file. The format is compatible with
+001100040201PKZip 2.04g, WinZip, InfoZip and other popular ZIP utilities.
+001200040201:P.
+001300040201:HP2.Restrictions::EHP2.
+001400040201:UL.
+001500040201:LI.
+001600040201Multi volume ZipFile (span) is not supported.
+001700040201:LI.
+001800040201Old compression used by old PKZip 1.x is not supported.
+001900040201:LI.
+002000040201Wild card (*, ?) and regular expression are not supported.
+002100040201:LI.
+002200040201This code support the "Traditional PKWARE Encryption".
+002300040201
+002400040201The new AES encryption added on Zip format by Winzip (see the page
+002500040201http://www.winzip.com/aes_info.htm ) and PKWare PKZip 5.x Strong
+002600040201Encryption is not supported.
+002700040201:LI.
+002800040201Not all errors can be monitored.
+002900040201:EUL.
+003000040201:IMHELP NAME='COM/ASTERISK'.
+003100040201.* Error messages
+003200040201:XH3.Error messages for ZIP
+003300040201:P.
+003400040201:HP3.*ESCAPE Messages:EHP3.
+003500040201:DL COMPACT.
+003600040201:DT.CPF9897
+003700040201:DD.Command failed.
+003800040201:EDL.
+003900040201:EHELP.
+004000040201.*****************************************************************
+004100040201.* Parameters Help
+004200040201.*
+004300040201:HELP NAME='ZIP/ZIPFILE'.
+004400040201ZIP file (ZIPFILE) - HELP
+004500040201:XH3.ZIP file (ZIPFILE)
+004600040201:P.
+004700040201Specifies ZIP file name.
+004800040201:IMHELP NAME='COM/REQPARM'.
+004900040201:EHELP.
+005000040201.*****************************
+005100040201:HELP NAME='ZIP/FILES'.
+005200040201Files to add ZIP file (FILES) - HELP
+005300040201:XH3.Files to add ZIP file (FILES)
+005400040201:P.
+005500040201Specifies files to add to ZIP file. Maximum number of file is 20.
+005600040201:IMHELP NAME='COM/REQPARM'.
+005700040201:IMHELP NAME='COM/MULTI'.
+005800040201:EHELP.
+005900040201.*****************************
+006000040201:HELP NAME='ZIP/REPLACE'.
+006100040201Replace or add file to ZIP file (REPLACE) - HELP
+006200040201:XH3.Replace or add file to ZIP file (REPLACE)
+006300040201:P.
+006400040201Specifies whether to overwrite existing ZIP file.
+006500040201:P.
+006600040201:IMHELP NAME='COM/LISTVAL'.
+006700040201:PARML.
+006800040201:PT.:PK DEF.*REPLACE:EPK.
+006900040201:PD.
+007000040201Replace (overwrite) existing ZIP file.
+007100040201:PT.:PV.*APPEND:EPV.
+007200040201:PD.
+007300040201Add file(s) to existing ZIP file.
+007400040201:PT.:PV.*PROMPT:EPV.
+007500040201:PD.
+007600040201Show prompt for user action.
+007700040201:EPARML.
+007800040201:EHELP.
+007900040201.*****************************
+008000040201:HELP NAME='ZIP/COMPLVL'.
+008100040201Compression level (COMPLVL) - HELP
+008200040201:XH3.Compression level (COMPLVL)
+008300040201:P.
+008400040201Specifies compression level.
+008500040201:P.
+008600040201:IMHELP NAME='COM/LISTVAL'.
+008700040201:PARML.
+008800040201:PT.:PK DEF.*DEFAULT:EPK.
+008900040201:PD.
+009000040201Equivalent to level 6.
+009100040201:PT.:PV.0 to 9:EPV.
+009200040201:PD.
+0093000402011 gives best speed, 9 gives best compression,
+0094000402010 gives no compression at all (the input data is simply copied a block
+009500040201at a time.
+009600040201:P.
+009700040201:EPARML.
+009800040201:EHELP.
+009900040201.*****************************
+010000040201:HELP NAME='ZIP/PASSWORD'.
+010100040201Password (PASSWORD) - HELP
+010200040201:XH3.Password (PASSWORD)
+010300040201:P.
+010400040201Specify password for the ZIP file if necessary.
+010500040201:EHELP.
+010600040201.*****************************************************************
+010700040201.* Common help entries
+010800040201:HELP NAME='COM/ASTERISK'.
+010900040201:NT.
+011000040201Do not precede an entry with an asterisk unless that
+011100040201entry is a "special value" that is shown (on the display or in
+011200040201the help information) with an asterisk.
+011300040201:ENT.
+011400040201:EHELP.
+011500040201.*
+011600040201:HELP NAME='COM/REQPARM'.
+011700040201:P.
+011800040201This is a required parameter.
+011900040201:EHELP.
+012000040201.*
+012100040201:HELP NAME='COM/LISTVAL'.
+012200040201:P.
+012300040201The possible values are:
+012400040201:EHELP.
+012500040201.*
+012600040201:HELP NAME='COM/MULTI'.
+012700040201:P.
+012800040201You can enter multiple values for this parameter. If you are on an
+012900040201entry display and you need additional entry fields to enter these
+013000040201multiple values, type a plus sign (+) in the entry field opposite
+013100040201the phrase "+ for more" and press the Enter key.
+013200040201:EHELP.
+013300040201.********************************************************************
+013400040201:EPNLGRP.
