@@ -1,94 +1,94 @@
-000100040201             PGM        PARM(&ZIPFILE &FILE &ADDPATH &REPLACE +
-000200040201                          &PASSWORD)
-000300040201             DCL        VAR(&ZIPFILE) TYPE(*CHAR) LEN(128)
-000400040201             DCL        VAR(&FILE) TYPE(*CHAR) LEN(128)
-000500040201             DCL        VAR(&ADDPATH) TYPE(*CHAR) LEN(4)
-000600040201             DCL        VAR(&REPLACE) TYPE(*CHAR) LEN(7)
-000700040201             DCL        VAR(&PASSWORD) TYPE(*CHAR) LEN(32)
-000800040201
-000900040201             DCL        VAR(&CMDSTR) TYPE(*CHAR) LEN(3000) +
-001000040201                          VALUE('CALL PGM(MINIUNZ400) PARM(')
-001100040201             DCL        VAR(&Q) TYPE(*CHAR) LEN(1) VALUE('''')
-001200040201             DCL        VAR(&ERR) TYPE(*CHAR) LEN(7)
-001300040201             DCL        VAR(&ERR_DEC) TYPE(*DEC) LEN(10)
-001400040201
-001500040201             /* QtmhGetEnv parameters */
-001600040201             DCL        VAR(&RCVVAR) TYPE(*CHAR) LEN(100) /* output */
-001700040201             DCL        VAR(&RCVLEN_B) TYPE(*CHAR) LEN(4) +
-001800040201                          VALUE(X'00000064') /* input  */
-001900040201             DCL        VAR(&RSPLEN_B) TYPE(*CHAR) LEN(4)   /* output */
-002000040201             DCL        VAR(&RSPLEN) TYPE(*DEC) LEN(3)
-002100040201             DCL        VAR(&REQVAR) TYPE(*CHAR) LEN(20) +
-002200040201                          VALUE(MINIUNZ_RTNCDE) /* input  */
-002300040201             DCL        VAR(&REQLEN_B) TYPE(*CHAR) LEN(4) +
-002400040201                          VALUE(X'0000000E') /* input  */
-002500040201             DCL        VAR(&QUSEC) TYPE(*CHAR) LEN(16) +
-002600040201                          VALUE(X'00100000000000000000000000000000') +
-002700040201                          /* input/output  */
-002800040201             /* QUSEC structure */
-002900040201             DCL        VAR(&QUSBAVL_B) TYPE(*CHAR) LEN(4)  /* output */
-003000040201             DCL        VAR(&QUSBAVL) TYPE(*DEC) LEN(3)
-003100040201
-003200040201             /* Construct command string to pass QCMDEXC */
-003300040201 NEXT:       IF         COND(&ADDPATH = '*YES') THEN(CHGVAR +
-003400040201                          VAR(&CMDSTR) VALUE(&CMDSTR |< &Q || '-x' || &Q))
-003500040201             ELSE       CMD(CHGVAR VAR(&CMDSTR) VALUE(&CMDSTR |< &Q +
-003600040201                          || '-e' || &Q))
-003700040201
-003800040201             IF         COND(&REPLACE = '*YES') THEN(CHGVAR +
-003900040201                          VAR(&CMDSTR) VALUE(&CMDSTR |> &Q || '-o' +
-004000040201                          || &Q))
-004100040201
-004200040201             IF         COND(&PASSWORD *NE ' ') THEN(CHGVAR +
-004300040201                          VAR(&CMDSTR) VALUE(&CMDSTR |> &Q || '-p' +
-004400040201                          || &Q || ' ' || &Q |< &PASSWORD |< &Q))
-004500040201
-004600040201             IF         COND(&FILE *NE '*ALL') THEN(CHGVAR +
-004700040201                          VAR(&CMDSTR) VALUE(&CMDSTR |> &Q |< +
-004800040201                          &ZIPFILE |< &Q || ' ' || &Q |< &FILE |< +
-004900040201                          &Q |< ')'))
-005000040201             ELSE       CMD(CHGVAR VAR(&CMDSTR) VALUE(&CMDSTR |> &Q +
-005100040201                          |< &ZIPFILE |< &Q || ')'))
-005200040201
-005300040201             /* Call miniunz via QCMDEXC */
-005400040201/*           SNDPGMMSG  MSG(&CMDSTR)            */
-005500040201             CALL       PGM(QCMDEXC) PARM(&CMDSTR 300)
-005600040201             MONMSG     MSGID(CPF0000) EXEC(DO)
-005700040201             SNDPGMMSG  MSGID(CPF9897) MSGF(QCPFMSG) MSGDTA('Command +
-005800040201                          failed. QCMDEXC returned unexpected +
-005900040201                          error.') MSGTYPE(*ESCAPE)
-006000040201             GOTO       CMDLBL(EXIT)
-006100040201             ENDDO
-006200040201
-006300040201             /* Get environment variable */
-006400040201             CALLPRC    PRC('QtmhGetEnv') PARM(&RCVVAR &RCVLEN_B +
-006500040201                          &RSPLEN_B &REQVAR &REQLEN_B &QUSEC)
-006600040201
-006700040201             CHGVAR     VAR(&QUSBAVL_B) VALUE(%SST(&QUSEC 5 4))
-006800040201             CHGVAR     VAR(&QUSBAVL) VALUE(%BIN(&QUSBAVL_B))
-006900040201             IF         COND(&QUSBAVL > 0) THEN(DO)
-007000040201             SNDPGMMSG  MSGID(CPF9897) MSGF(QCPFMSG) +
-007100040201                          MSGDTA('QtmhGetEnv returned ' || +
-007200040201                          %SST(&QUSEC 9 7) |< '.') MSGTYPE(*ESCAPE)
-007300040201             GOTO       CMDLBL(EXIT)
-007400040201             ENDDO
-007500040201
-007600040201             CHGVAR     VAR(&RSPLEN) VALUE(%BIN(&RSPLEN_B))
-007700040201             IF         COND(&RSPLEN < 1) THEN(DO)
-007800040201             SNDPGMMSG  MSGID(CPF9897) MSGF(QCPFMSG) +
-007900040201                          MSGDTA('QtmhGetEnv returned invalid +
-008000040201                          length (smaller than 1).') MSGTYPE(*ESCAPE)
-008100040201             GOTO       CMDLBL(EXIT)
-008200040201             ENDDO
-008300040201
-008400040201             /* Examine environment variable (exit status of mnizip) */
-008500040201             CHGVAR     VAR(&ERR) VALUE(%SST(&RCVVAR 1 &RSPLEN))
-008600040201             CHGVAR     VAR(&ERR_DEC) VALUE(&ERR)
-008700040201             IF         COND(&ERR_DEC = 0) THEN(SNDPGMMSG +
-008800040201                          MSGID(CPF9898) MSGF(QCPFMSG) +
-008900040201                          MSGDTA('Command completed'))
-009000040201             ELSE       CMD(SNDPGMMSG MSGID(CPF9897) MSGF(QCPFMSG) +
-009100040201                          MSGDTA('Command failed. See low-level +
-009200040201                          message for detail.') MSGTYPE(*ESCAPE))
-009300040201
-009400040201 EXIT:       ENDPGM
+             PGM        PARM(&ZIPFILE &FILE &ADDPATH &REPLACE +
+                          &PASSWORD)
+             DCL        VAR(&ZIPFILE) TYPE(*CHAR) LEN(128)
+             DCL        VAR(&FILE) TYPE(*CHAR) LEN(128)
+             DCL        VAR(&ADDPATH) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&REPLACE) TYPE(*CHAR) LEN(7)
+             DCL        VAR(&PASSWORD) TYPE(*CHAR) LEN(32)
+
+             DCL        VAR(&CMDSTR) TYPE(*CHAR) LEN(3000) +
+                          VALUE('CALL PGM(MINIUNZ400) PARM(')
+             DCL        VAR(&Q) TYPE(*CHAR) LEN(1) VALUE('''')
+             DCL        VAR(&ERR) TYPE(*CHAR) LEN(7)
+             DCL        VAR(&ERR_DEC) TYPE(*DEC) LEN(10)
+
+             /* QtmhGetEnv parameters */
+             DCL        VAR(&RCVVAR) TYPE(*CHAR) LEN(100) /* output */
+             DCL        VAR(&RCVLEN_B) TYPE(*CHAR) LEN(4) +
+                          VALUE(X'00000064') /* input  */
+             DCL        VAR(&RSPLEN_B) TYPE(*CHAR) LEN(4)   /* output */
+             DCL        VAR(&RSPLEN) TYPE(*DEC) LEN(3)
+             DCL        VAR(&REQVAR) TYPE(*CHAR) LEN(20) +
+                          VALUE(MINIUNZ_RTNCDE) /* input  */
+             DCL        VAR(&REQLEN_B) TYPE(*CHAR) LEN(4) +
+                          VALUE(X'0000000E') /* input  */
+             DCL        VAR(&QUSEC) TYPE(*CHAR) LEN(16) +
+                          VALUE(X'00100000000000000000000000000000') +
+                          /* input/output  */
+             /* QUSEC structure */
+             DCL        VAR(&QUSBAVL_B) TYPE(*CHAR) LEN(4)  /* output */
+             DCL        VAR(&QUSBAVL) TYPE(*DEC) LEN(3)
+
+             /* Construct command string to pass QCMDEXC */
+ NEXT:       IF         COND(&ADDPATH = '*YES') THEN(CHGVAR +
+                          VAR(&CMDSTR) VALUE(&CMDSTR |< &Q || '-x' || &Q))
+             ELSE       CMD(CHGVAR VAR(&CMDSTR) VALUE(&CMDSTR |< &Q +
+                          || '-e' || &Q))
+
+             IF         COND(&REPLACE = '*YES') THEN(CHGVAR +
+                          VAR(&CMDSTR) VALUE(&CMDSTR |> &Q || '-o' +
+                          || &Q))
+
+             IF         COND(&PASSWORD *NE ' ') THEN(CHGVAR +
+                          VAR(&CMDSTR) VALUE(&CMDSTR |> &Q || '-p' +
+                          || &Q || ' ' || &Q |< &PASSWORD |< &Q))
+
+             IF         COND(&FILE *NE '*ALL') THEN(CHGVAR +
+                          VAR(&CMDSTR) VALUE(&CMDSTR |> &Q |< +
+                          &ZIPFILE |< &Q || ' ' || &Q |< &FILE |< +
+                          &Q |< ')'))
+             ELSE       CMD(CHGVAR VAR(&CMDSTR) VALUE(&CMDSTR |> &Q +
+                          |< &ZIPFILE |< &Q || ')'))
+
+             /* Call miniunz via QCMDEXC */
+/*           SNDPGMMSG  MSG(&CMDSTR)            */
+             CALL       PGM(QCMDEXC) PARM(&CMDSTR 300)
+             MONMSG     MSGID(CPF0000) EXEC(DO)
+             SNDPGMMSG  MSGID(CPF9897) MSGF(QCPFMSG) MSGDTA('Command +
+                          failed. QCMDEXC returned unexpected +
+                          error.') MSGTYPE(*ESCAPE)
+             GOTO       CMDLBL(EXIT)
+             ENDDO
+
+             /* Get environment variable */
+             CALLPRC    PRC('QtmhGetEnv') PARM(&RCVVAR &RCVLEN_B +
+                          &RSPLEN_B &REQVAR &REQLEN_B &QUSEC)
+
+             CHGVAR     VAR(&QUSBAVL_B) VALUE(%SST(&QUSEC 5 4))
+             CHGVAR     VAR(&QUSBAVL) VALUE(%BIN(&QUSBAVL_B))
+             IF         COND(&QUSBAVL > 0) THEN(DO)
+             SNDPGMMSG  MSGID(CPF9897) MSGF(QCPFMSG) +
+                          MSGDTA('QtmhGetEnv returned ' || +
+                          %SST(&QUSEC 9 7) |< '.') MSGTYPE(*ESCAPE)
+             GOTO       CMDLBL(EXIT)
+             ENDDO
+
+             CHGVAR     VAR(&RSPLEN) VALUE(%BIN(&RSPLEN_B))
+             IF         COND(&RSPLEN < 1) THEN(DO)
+             SNDPGMMSG  MSGID(CPF9897) MSGF(QCPFMSG) +
+                          MSGDTA('QtmhGetEnv returned invalid +
+                          length (smaller than 1).') MSGTYPE(*ESCAPE)
+             GOTO       CMDLBL(EXIT)
+             ENDDO
+
+             /* Examine environment variable (exit status of mnizip) */
+             CHGVAR     VAR(&ERR) VALUE(%SST(&RCVVAR 1 &RSPLEN))
+             CHGVAR     VAR(&ERR_DEC) VALUE(&ERR)
+             IF         COND(&ERR_DEC = 0) THEN(SNDPGMMSG +
+                          MSGID(CPF9898) MSGF(QCPFMSG) +
+                          MSGDTA('Command completed'))
+             ELSE       CMD(SNDPGMMSG MSGID(CPF9897) MSGF(QCPFMSG) +
+                          MSGDTA('Command failed. See low-level +
+                          message for detail.') MSGTYPE(*ESCAPE))
+
+ EXIT:       ENDPGM

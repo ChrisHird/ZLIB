@@ -1,164 +1,164 @@
-000100040201/* ILE-C compile REXX proc */
-000200040201SAY " "
-000300040201SAY "Start ZLIB compilation."
-000400040201SAY " You must have authority to exec CRTCMOD and CRTPGM."
-000500040201SAY " "
-000600040201SAY "    * * * * * * * * * * * * * * * * * * * * * * "
-000700040201SAY " "
-000800040201/* SAY "Input object library name."    */
-000900040201/* PULL OLIB                           */
-001000040201OLIB = 'ZLIB'
-001100160617/* PULL SRCLIB                         */
-001200160617SRCLIB = 'ZLIBSRC'
-001300040201SAY " "
-001400040201OUTPUT = '*PRINT'
-001500050204OPTIMIZE = '10'
-001600050204/* OPTIMIZE = '40' */
-001700050204DEBUG = '*ALL'
-001800050204/* DEBUG = '*NONE'*/
-001900040226/* SYSIFCOPT = '*IFSIO' */
-002000040226SYSIFCOPT = '*IFS64IO'
-002100160617/* TGTRLS = '*CURRENT' */
-002200160617TGTRLS = '*CURRENT'
-002300040201
-002400040201/* defs */
-002500040201D1 = 'AS400'
-002600040201D2 = 'HAVE_MEMCPY'
-002700040201D3 = 'unix'
-002800081213D4 = 'OS400'
-002900040201D5 = 'NODOBANNER'
-003000040201D6 = 'FPRINT2SNDMSG'
-003100040201D7 = 'CASESENSITIVITYDEFAULT_NO'
-003200040201
-003300040201/* zlib modules */
-003400040201MO.1 = 'adler32'
-003500040201MO.2 = 'compress'
-003600040201MO.3 = 'crc32'
-003700040201MO.4 = 'deflate'
-003800040201MO.5 = 'gzio'
-003900040201MO.6 = 'infback'
-004000040201MO.7 = 'inffast'
-004100040201MO.8 = 'inflate'
-004200040201MO.9 = 'inftrees'
-004300040201MO.10 = 'ioapi'
-004400040201MO.11 = 'trees'
-004500040201MO.12 = 'uncompr'
-004600040201MO.13 = 'zutil'
-004700040201/* Sample programs (not used) */
-004800040201MO.14 = 'example'
-004900040201MO.15 = 'minigzip'
-005000040201/* 'maketreee' This program is included in the distribution for completeness. */
-005100040201/* minizip */
-005200040201MO.16 = 'miniunz'
-005300040201MO.17 = 'minizip'
-005400040201MO.18 = 'zip'
-005500040201MO.19 = 'unzip'
-005600040201MO.20 = 'ebcdic'
-005700040201/* OS/400 interface */
-005800040201MO.21 = 'DSPZIP'
-005900040201MO.22 = 'UNZIP'
-006000040201MO.23 = 'ZIP'
-006100040201
-006200040201SAY 'Change JOBCCSID to 37 temporarily.'
-006300040201SAY 'Remember to set correct JOBCCSID after compilation if necessary.'
-006400040201SAY ' '
-006500040201'CHGJOB CCSID(37)'
-006600040201
-006700160617SAY 'Create program library for ZLIB..'
-006800160617'CRTLIB LIB(ZLIB)'
-006900040201SAY 'Start creating modules for ZLIB...'
-007000040201DO I = 1 TO 13
-007100040201  SAY '  creating module 'MO.I'...'
-007200160617  'CRTCMOD MODULE(&SRCLIB/'MO.I') SRCFILE(&SRCLIB/QCSRC) ',
-007300040201  'OUTPUT(&OUTPUT) OPTIMIZE(&OPTIMIZE) DBGVIEW(&DEBUG) ',
-007400081213  'DEFINE(&D1 &D2 &D4) ',
-007500040201  'SYSIFCOPT(&SYSIFCOPT) TGTRLS(&TGTRLS)'
-007600040201  SAY "  result->" RC
-007700040201END
-007800040201SAY 'Creating service program ZLIB...'
-007900040201'CRTSRVPGM SRVPGM(&OLIB/ZLIB) MODULE(',
-008000160617'&SRCLIB/'MO.1' &SRCLIB/'MO.2' &SRCLIB/'MO.3' &SRCLIB/'MO.4' &SRCLIB/'MO.5' ',
-008100160617'&SRCLIB/'MO.6' &SRCLIB/'MO.7' &SRCLIB/'MO.8' &SRCLIB/'MO.9' &SRCLIB/'MO.10' ',
-008200160617'&SRCLIB/'MO.11' &SRCLIB/'MO.12' &SRCLIB/'MO.13') ',
-008300040201'EXPORT(*ALL) TGTRLS(&TGTRLS) TEXT(''zlib 1.2.1 *SRVPGM for OS/400'')'
-008400040201  SAY "  result->" RC
-008500040201SAY " "
-008600040201
-008700040201SAY 'Start creating program and modules miniunz/minizip for OS/400...'
-008800040201DO I = 16 TO 20
-008900040201  SAY '  creating module 'MO.I'400...'
-009000160617  'CRTCMOD MODULE(&SRCLIB/'MO.I'400) SRCFILE(&SRCLIB/QCSRC) SRCMBR('MO.I') ',
-009100040201  'OUTPUT(&OUTPUT) OPTIMIZE(&OPTIMIZE) DBGVIEW(&DEBUG) ',
-009200040201  'DEFINE(&D1 &D3 &D5 &D6 &D7) ',
-009300040201  'SYSIFCOPT(&SYSIFCOPT) TGTRLS(&TGTRLS)'
-009400040201  SAY "  result->" RC
-009500040201END
-009600040201  SAY '  creating program MINIUNZ400...'
-009700040201  'CRTPGM PGM(&OLIB/MINIUNZ400) ',
-009800160617  'MODULE(&SRCLIB/MINIUNZ400 &SRCLIB/UNZIP400 &SRCLIB/EBCDIC400) ',
-009900040201  'BNDSRVPGM(&OLIB/ZLIB) DETAIL(*BASIC) TGTRLS(&TGTRLS) ',
-010000040201  "TEXT('miniunz for OS/400')"
-010100040201  SAY "  result->" RC
-010200040201  SAY '  creating program MINIZIP400...'
-010300040201  'CRTPGM PGM(&OLIB/MINIZIP400) ',
-010400160617  'MODULE(&SRCLIB/MINIZIP400 &SRCLIB/ZIP400 &SRCLIB/EBCDIC400) ',
-010500040201  'BNDSRVPGM(&OLIB/ZLIB) DETAIL(*BASIC) TGTRLS(&TGTRLS) ',
-010600040201  "TEXT('minizip for OS/400')"
-010700040201  SAY "  result->" RC
-010800040201
-010900040201SAY 'Start creating program and modules miniunz/minizip for Qshell...'
-011000040201DO I = 16 TO 20
-011100040201  SAY '  creating module 'MO.I'...'
-011200160617  'CRTCMOD MODULE(&SRCLIB/'MO.I') SRCFILE(&SRCLIB/QCSRC) ',
-011300040201  'OUTPUT(&OUTPUT) OPTIMIZE(&OPTIMIZE) DBGVIEW(&DEBUG) ',
-011400040201  'DEFINE(&D1 &D3) ',
-011500040201  'SYSIFCOPT(&SYSIFCOPT) TGTRLS(&TGTRLS)'
-011600040201  SAY "  result->" RC
-011700040201END
-011800040201  SAY '  creating program MINIUNZ...'
-011900160617  'CRTPGM PGM(&OLIB/MINIUNZ) ',
-012000160617  'MODULE(&SRCLIB/MINIUNZ &SRCLIB/UNZIP &SRCLIB/EBCDIC) ',
-012100040201  'BNDSRVPGM(&OLIB/ZLIB) DETAIL(*BASIC) TGTRLS(&TGTRLS) ',
-012200040201  "TEXT('miniunz for Qshell')"
-012300040201  SAY "  result->" RC
-012400040201  SAY '  creating program MINIZIP...'
-012500160617  'CRTPGM PGM(&OLIB/MINIZIP) ',
-012600160617  'MODULE(&SRCLIB/MINIZIP &SRCLIB/ZIP &SRCLIB/EBCDIC) ',
-012700040201  'BNDSRVPGM(&OLIB/ZLIB) DETAIL(*BASIC) TGTRLS(&TGTRLS) ',
-012800040201  "TEXT('minizip for Qshell')"
-012900040201  SAY "  result->" RC
-013000040201
-013100040201SAY " "
-013200040201SAY 'Remove/add symbolic link...'
-013300040201SAY ' (ignore "no such link error" for the first compilation...)'
-013400040201  "QSH CMD('rm /usr/bin/minizip')"
-013500040201  "QSH CMD('ln -s /qsys.lib/zlib.lib/minizip.pgm /usr/bin/minizip')"
-013600040201  SAY "  result->" RC
-013700040201  "QSH CMD('rm /usr/bin/miniunz')"
-013800040201  "QSH CMD('ln -s /qsys.lib/zlib.lib/miniunz.pgm /usr/bin/miniunz')"
-013900040201  SAY "  result->" RC
-014000040201
-014100040201SAY " "
-014200040201SAY 'Creating OS/400 command interface...'
-014300040201DO I = 21 TO 23
-014400040201  SAY '  creating CL module 'MO.I'CLP...'
-014500160617  'CRTCLMOD MODULE(&SRCLIB/'MO.I'CLP) ',
-014600160617  'SRCFILE(&SRCLIB/QCLSRC) TGTRLS(&TGTRLS) ',
-014700040201  'DBGVIEW(&DEBUG)'
-014800040201  SAY "  result->" RC
-014900040201  SAY '  creating CL program 'MO.I'CLP...'
-015000160617  'CRTPGM PGM(&OLIB/'MO.I'CLP) MODULE(&SRCLIB/'MO.I'CLP) TGTRLS(&TGTRLS) ',
-015100040201  'BNDSRVPGM(QHTTPSVR/QZHBCGI)'
-015200040201  SAY "  result->" RC
-015300040201  SAY '  creating PLNGRP for 'MO.I'...'
-015400160617  'CRTPNLGRP PNLGRP(&OLIB/'MO.I'HLP) SRCFILE(&SRCLIB/QCMDSRC) CHRID(37 37)'
-015500040201  SAY "  result->" RC
-015600040201  SAY '  creating OS/400 CMD for 'MO.I'...'
-015700160617  'CRTCMD CMD(&OLIB/'MO.I') PGM(&OLIB/'MO.I'CLP) SRCFILE(&SRCLIB/QCMDSRC) ',
-015800040201  'HLPPNLGRP(&OLIB/'MO.I'HLP) HLPID(*CMD)'
-015900040201  SAY "  result->" RC
-016000040201END
-016100040201
-016200040201SAY " "
-016300040201SAY "Compile finished. Confirm error(s) if exists."
-016400040201SAY " "
+/* ILE-C compile REXX proc */
+SAY " "
+SAY "Start ZLIB compilation."
+SAY " You must have authority to exec CRTCMOD and CRTPGM."
+SAY " "
+SAY "    * * * * * * * * * * * * * * * * * * * * * * "
+SAY " "
+/* SAY "Input object library name."    */
+/* PULL OLIB                           */
+OLIB = 'ZLIB'
+/* PULL SRCLIB                         */
+SRCLIB = 'ZLIBSRC'
+SAY " "
+OUTPUT = '*PRINT'
+OPTIMIZE = '10'
+/* OPTIMIZE = '40' */
+DEBUG = '*ALL'
+/* DEBUG = '*NONE'*/
+/* SYSIFCOPT = '*IFSIO' */
+SYSIFCOPT = '*IFS64IO'
+/* TGTRLS = '*CURRENT' */
+TGTRLS = '*CURRENT'
+
+/* defs */
+D1 = 'AS400'
+D2 = 'HAVE_MEMCPY'
+D3 = 'unix'
+D4 = 'OS400'
+D5 = 'NODOBANNER'
+D6 = 'FPRINT2SNDMSG'
+D7 = 'CASESENSITIVITYDEFAULT_NO'
+
+/* zlib modules */
+MO.1 = 'adler32'
+MO.2 = 'compress'
+MO.3 = 'crc32'
+MO.4 = 'deflate'
+MO.5 = 'gzio'
+MO.6 = 'infback'
+MO.7 = 'inffast'
+MO.8 = 'inflate'
+MO.9 = 'inftrees'
+MO.10 = 'ioapi'
+MO.11 = 'trees'
+MO.12 = 'uncompr'
+MO.13 = 'zutil'
+/* Sample programs (not used) */
+MO.14 = 'example'
+MO.15 = 'minigzip'
+/* 'maketreee' This program is included in the distribution for completeness. */
+/* minizip */
+MO.16 = 'miniunz'
+MO.17 = 'minizip'
+MO.18 = 'zip'
+MO.19 = 'unzip'
+MO.20 = 'ebcdic'
+/* OS/400 interface */
+MO.21 = 'DSPZIP'
+MO.22 = 'UNZIP'
+MO.23 = 'ZIP'
+
+SAY 'Change JOBCCSID to 37 temporarily.'
+SAY 'Remember to set correct JOBCCSID after compilation if necessary.'
+SAY ' '
+'CHGJOB CCSID(37)'
+
+SAY 'Create program library for ZLIB..'
+'CRTLIB LIB(ZLIB)'
+SAY 'Start creating modules for ZLIB...'
+DO I = 1 TO 13
+  SAY '  creating module 'MO.I'...'
+  'CRTCMOD MODULE(&SRCLIB/'MO.I') SRCFILE(&SRCLIB/QCSRC) ',
+  'OUTPUT(&OUTPUT) OPTIMIZE(&OPTIMIZE) DBGVIEW(&DEBUG) ',
+  'DEFINE(&D1 &D2 &D4) ',
+  'SYSIFCOPT(&SYSIFCOPT) TGTRLS(&TGTRLS)'
+  SAY "  result->" RC
+END
+SAY 'Creating service program ZLIB...'
+'CRTSRVPGM SRVPGM(&OLIB/ZLIB) MODULE(',
+'&SRCLIB/'MO.1' &SRCLIB/'MO.2' &SRCLIB/'MO.3' &SRCLIB/'MO.4' &SRCLIB/'MO.5' ',
+'&SRCLIB/'MO.6' &SRCLIB/'MO.7' &SRCLIB/'MO.8' &SRCLIB/'MO.9' &SRCLIB/'MO.10' ',
+'&SRCLIB/'MO.11' &SRCLIB/'MO.12' &SRCLIB/'MO.13') ',
+'EXPORT(*ALL) TGTRLS(&TGTRLS) TEXT(''zlib 1.2.1 *SRVPGM for OS/400'')'
+  SAY "  result->" RC
+SAY " "
+
+SAY 'Start creating program and modules miniunz/minizip for OS/400...'
+DO I = 16 TO 20
+  SAY '  creating module 'MO.I'400...'
+  'CRTCMOD MODULE(&SRCLIB/'MO.I'400) SRCFILE(&SRCLIB/QCSRC) SRCMBR('MO.I') ',
+  'OUTPUT(&OUTPUT) OPTIMIZE(&OPTIMIZE) DBGVIEW(&DEBUG) ',
+  'DEFINE(&D1 &D3 &D5 &D6 &D7) ',
+  'SYSIFCOPT(&SYSIFCOPT) TGTRLS(&TGTRLS)'
+  SAY "  result->" RC
+END
+  SAY '  creating program MINIUNZ400...'
+  'CRTPGM PGM(&OLIB/MINIUNZ400) ',
+  'MODULE(&SRCLIB/MINIUNZ400 &SRCLIB/UNZIP400 &SRCLIB/EBCDIC400) ',
+  'BNDSRVPGM(&OLIB/ZLIB) DETAIL(*BASIC) TGTRLS(&TGTRLS) ',
+  "TEXT('miniunz for OS/400')"
+  SAY "  result->" RC
+  SAY '  creating program MINIZIP400...'
+  'CRTPGM PGM(&OLIB/MINIZIP400) ',
+  'MODULE(&SRCLIB/MINIZIP400 &SRCLIB/ZIP400 &SRCLIB/EBCDIC400) ',
+  'BNDSRVPGM(&OLIB/ZLIB) DETAIL(*BASIC) TGTRLS(&TGTRLS) ',
+  "TEXT('minizip for OS/400')"
+  SAY "  result->" RC
+
+SAY 'Start creating program and modules miniunz/minizip for Qshell...'
+DO I = 16 TO 20
+  SAY '  creating module 'MO.I'...'
+  'CRTCMOD MODULE(&SRCLIB/'MO.I') SRCFILE(&SRCLIB/QCSRC) ',
+  'OUTPUT(&OUTPUT) OPTIMIZE(&OPTIMIZE) DBGVIEW(&DEBUG) ',
+  'DEFINE(&D1 &D3) ',
+  'SYSIFCOPT(&SYSIFCOPT) TGTRLS(&TGTRLS)'
+  SAY "  result->" RC
+END
+  SAY '  creating program MINIUNZ...'
+  'CRTPGM PGM(&OLIB/MINIUNZ) ',
+  'MODULE(&SRCLIB/MINIUNZ &SRCLIB/UNZIP &SRCLIB/EBCDIC) ',
+  'BNDSRVPGM(&OLIB/ZLIB) DETAIL(*BASIC) TGTRLS(&TGTRLS) ',
+  "TEXT('miniunz for Qshell')"
+  SAY "  result->" RC
+  SAY '  creating program MINIZIP...'
+  'CRTPGM PGM(&OLIB/MINIZIP) ',
+  'MODULE(&SRCLIB/MINIZIP &SRCLIB/ZIP &SRCLIB/EBCDIC) ',
+  'BNDSRVPGM(&OLIB/ZLIB) DETAIL(*BASIC) TGTRLS(&TGTRLS) ',
+  "TEXT('minizip for Qshell')"
+  SAY "  result->" RC
+
+SAY " "
+SAY 'Remove/add symbolic link...'
+SAY ' (ignore "no such link error" for the first compilation...)'
+  "QSH CMD('rm /usr/bin/minizip')"
+  "QSH CMD('ln -s /qsys.lib/zlib.lib/minizip.pgm /usr/bin/minizip')"
+  SAY "  result->" RC
+  "QSH CMD('rm /usr/bin/miniunz')"
+  "QSH CMD('ln -s /qsys.lib/zlib.lib/miniunz.pgm /usr/bin/miniunz')"
+  SAY "  result->" RC
+
+SAY " "
+SAY 'Creating OS/400 command interface...'
+DO I = 21 TO 23
+  SAY '  creating CL module 'MO.I'CLP...'
+  'CRTCLMOD MODULE(&SRCLIB/'MO.I'CLP) ',
+  'SRCFILE(&SRCLIB/QCLSRC) TGTRLS(&TGTRLS) ',
+  'DBGVIEW(&DEBUG)'
+  SAY "  result->" RC
+  SAY '  creating CL program 'MO.I'CLP...'
+  'CRTPGM PGM(&OLIB/'MO.I'CLP) MODULE(&SRCLIB/'MO.I'CLP) TGTRLS(&TGTRLS) ',
+  'BNDSRVPGM(QHTTPSVR/QZHBCGI)'
+  SAY "  result->" RC
+  SAY '  creating PLNGRP for 'MO.I'...'
+  'CRTPNLGRP PNLGRP(&OLIB/'MO.I'HLP) SRCFILE(&SRCLIB/QCMDSRC) CHRID(37 37)'
+  SAY "  result->" RC
+  SAY '  creating OS/400 CMD for 'MO.I'...'
+  'CRTCMD CMD(&OLIB/'MO.I') PGM(&OLIB/'MO.I'CLP) SRCFILE(&SRCLIB/QCMDSRC) ',
+  'HLPPNLGRP(&OLIB/'MO.I'HLP) HLPID(*CMD)'
+  SAY "  result->" RC
+END
+
+SAY " "
+SAY "Compile finished. Confirm error(s) if exists."
+SAY " "
