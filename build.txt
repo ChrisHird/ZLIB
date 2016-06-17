@@ -1,5 +1,5 @@
 name: 
-	FTP Client for IBM i
+	ZLIB Port for IBM i
 version:
 	010000
 build:
