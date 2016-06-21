@@ -3,5 +3,5 @@ Port of the ZLIB code to allow build on IBM i with RELIC Package Manager. Source
 
 Please build into `ZLIBSRC`, programs will be installed into `ZLIB`:
 ```
-RELICGET PLOC('https://github.com/ChrisHird/ZLIB/archive/master.zip') PDIR('ZLIB-master') PNAME(ZLIBSRC)
+RELICGET PLOC('https://github.com/ChrisHird/ZLIB/archive/V1.0.0.2-pre.zip') PDIR('ZLIB-1.0.0.2-pre') PNAME(ZLIBSRC)
 ```
